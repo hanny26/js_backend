@@ -44,6 +44,10 @@ const videoSchema = new Schema(
  { timestamps: true}
 );
 
+
+// now we can write queries joke aggregation queries hai 
+videoSchema.plugin(mongooseAggregatePaginate);
+
 module.exports = mongoose.model("Video", videoSchema);
 // export const Video = mongoose.model("Video", videoSchema);
 
