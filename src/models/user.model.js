@@ -20,7 +20,7 @@ const userSchema = new Schema({
     trim: true,
   },
 
-  fullname: {
+  fullName: {
     type: String,
     required: true,
     trim: true,
@@ -64,6 +64,42 @@ userSchema.pre("save", async function(next) {
 
 userSchema.methods.isPasswordCorrect = async function(password){
    return await bcrypt.compare(password, this.password);
+}
+
+//async ki zaroorat nhi hai kyuki vo thoda fast hojata hai 
+userSchema.methods.generateAccessToken = function(){
+    //sign method jo hai vo generate kr deta hai token ko 
+    //id kaha se mileg to ye jo method hai uske pass db ka access hai "this" ke andar  isiliye to function likhte hai or arrow function nhi likhte
+   return jwt.sign(
+        {
+            _id : this._id,
+            email: this.email,
+            username: this.username,
+            fullName: this.fullName
+        },
+        process.env.ACCESS_TOKEN_SECRET ,
+        {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+        
+        }
+)
+}   
+
+//refresh token joke bar bar refresh hota hai , isiliye usme hum sirf id rakhte hai 
+userSchema.methods.generateRefreshToken = function(){
+    return jwt.sign(
+        {
+            _id : this._id,
+            email: this.email,
+            username: this.username,
+            fullName: this.fullName
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY 
+        
+        }
+)
 }
 
 module.exports = mongoose.model("User", userSchema);
