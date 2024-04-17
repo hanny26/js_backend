@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { DB_NAME } = require("../constants");
+const { DB_NAME } = require("../constants.js");
 
 // db is in another continent
 const connectDB = async () => {

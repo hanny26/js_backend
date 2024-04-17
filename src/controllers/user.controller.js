@@ -1,4 +1,4 @@
-const {asyncHandler} = require('../utils/asyncHandler');
+const {asyncHandler} = require('../utils/asyncHandler.js');
 
 const registerUser = asyncHandler(async (req, res) => {
     response.status(200).json({
