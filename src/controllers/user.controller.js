@@ -7,6 +7,4 @@ const registerUser = asyncHandler(async (req, res) => {
     });
 })
 
-module.exports = {
-    registerUser: registerUser
-};
+module.exports = {registerUser};
