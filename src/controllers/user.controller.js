@@ -17,7 +17,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
    //if form se ya json se data aa rha hai toh req.body me ayega , but url se a rha hai toh age dekhege 
    const {fullname, email , username , password} = req.body;
-   console.log("email: ", email);
+//    console.log("email: ", email);
   
 //    getting the user details
     if(
@@ -27,10 +27,10 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
 //checking user already exist or not, findOne() is a method which find the user 
-const existedUser= User.findOne({
+const existedUser= await User.findOne({
     $or: [
-        {email: email},
-        {username: username}
+        { email },
+        { username }
     ]
 });
 // lets check for existedUser , hai to error , nahi hai toh create, 409 user ka error
