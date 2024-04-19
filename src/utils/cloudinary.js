@@ -1,4 +1,4 @@
-const {v2} = require('cloudinary');
+const {v2: cloudinary} = require('cloudinary');
 //fs is a file system 
 const fs = require('fs');
 
