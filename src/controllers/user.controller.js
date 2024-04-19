@@ -2,6 +2,7 @@ const {asyncHandler} = require('../utils/asyncHandler.js');
 const {ApiError} = require('../utils/ApiError.js');
 const User = require('../models/user.model.js');
 const {  uploadOnCloudinary } = require('../utils/cloudinary.js');
+const {ApiResponse} = require('../utils/ApiResponse.js');
 
 const registerUser = asyncHandler(async (req, res) => {
     // get user details from frontend 
@@ -63,8 +64,18 @@ if (!avatar) {
     username: username.toLowerCase(),
 })
 // checking user empty or not 
+// in select() method we can pass those fields jo apne ko select krna hai 
+
+ const createdUser= await User.findById(user._id).select(
+    "-password -refreshToken"
+ )
+//if created user nahi hai 
+if (!createdUser) {
+    throw new ApiError(500, "User not created");
+    }
 
 
+    res.status(201).json(new ApiResponse(200, createdUser, "User created successfully"));
 
 
 })
