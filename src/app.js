@@ -18,6 +18,7 @@ app.use(cookieParser());
 const userRouter = require('./routes/user.routes.js');
 
 // routes declaration 
-app.use("/user", userRouter);
+app.use("/api/user", userRouter);
+//http://localhost:8000/api/user/register
 
 module.exports = {app} ;
