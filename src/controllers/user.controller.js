@@ -55,6 +55,10 @@ if (!avatar) {
     throw new ApiError(400, "avatar file is requires");
 }
 
+if (!avatarUpload || !coverImageUpload) {
+    throw new ApiError(400, "Failed to upload avatar or cover image");
+}
+
 // now entry in database
  const user = await User.create({
     fullName,
