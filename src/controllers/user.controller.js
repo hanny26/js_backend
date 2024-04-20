@@ -50,6 +50,7 @@ if (!avatarLocalPath) {
 const avatar = await uploadOnCloudinary(avatarLocalPath);
 
 const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
 if (!avatar) {
     throw new ApiError(400, "avatar file is requires");
 }
