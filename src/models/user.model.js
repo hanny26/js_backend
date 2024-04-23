@@ -23,16 +23,17 @@ const userSchema = new Schema({
   fullName: {
     type: String,
     required: true,
-    trim: true,
-    index: true,
+    // trim: true,
+    // index: true,
   },
   avatar: {
     type: String, //cloudinary url
     required: true,
   },
-  coverImage: {
-    type: String, //cloudinary url
-  },
+  // coverImage: {
+  //   type: String, //cloudinary url
+  //   required: true,
+  // },
   watchHistory: [
     {
       type: Schema.Types.ObjectId,
@@ -41,7 +42,7 @@ const userSchema = new Schema({
   ],
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required: true,
   },
   refreshToken: {
     type: String,
