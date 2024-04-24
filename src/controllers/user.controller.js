@@ -162,8 +162,14 @@ const loginUser = asyncHandler(async (req, res) => {
         )
     )
 
-   
-    
 });
+
+//Logout User logic
+// fist of all remove all cookies, 
+//than reset the refresh token , so it would be logged out ,basically removing 
+
+const logoutUser = asyncHandler(async (req, res) => {
+   
+})
 
 module.exports = { registerUser, loginUser };
