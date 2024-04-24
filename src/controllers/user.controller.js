@@ -169,7 +169,34 @@ const loginUser = asyncHandler(async (req, res) => {
 //than reset the refresh token , so it would be logged out ,basically removing 
 
 const logoutUser = asyncHandler(async (req, res) => {
-   
-})
+    //login the accesstoken tha , uske basis pe query mari database se or req.user add kr diya
+  await User.findByIdAndUpdate(
+      req.user._Id,
+      {
+         $set: {
+          refreshToken: undefined
+         }
+        },
+
+         {
+          new: true
+         
+        } )
+
+       
+    const options = {
+      httpOnly: true,
+      secure : true
+  }
+  
+  return res
+  .status(200)
+  .clearCookie("accessToken", options)
+  .clearCookie("refresgToken", options)
+  .json(new ApiResponse(200, {} , "user logged out"))
+  
+
+
+});
 
 module.exports = { registerUser, loginUser , logoutUser };
