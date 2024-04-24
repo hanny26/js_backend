@@ -172,4 +172,4 @@ const logoutUser = asyncHandler(async (req, res) => {
    
 })
 
-module.exports = { registerUser, loginUser };
+module.exports = { registerUser, loginUser , logoutUser };

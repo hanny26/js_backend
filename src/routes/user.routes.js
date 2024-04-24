@@ -1,8 +1,9 @@
 // user.routes.js
 const express = require("express");
 const router = express.Router();
-const { registerUser } = require("../controllers/user.controller.js");
+const { registerUser, loginUser, logoutUser } = require("../controllers/user.controller.js");
 const upload = require("../middlewares/multer.middleware.js");
+const {  verifyJwt } = require("../middlewares/auth.middleware.js")
 
 router.route("/register").post(
   upload.fields([
@@ -20,7 +21,12 @@ router.route("/register").post(
   registerUser
 );
 
-// router.route("/login").post(loginUser)
+router.route("/login").post(loginUser);
+
+
+// secure routes
+router.route("/logout").post( verifyJwt , logoutUser)
+
 
 module.exports = router;
 
