@@ -4,24 +4,24 @@ const User = require("../models/user.model.js");
 const { uploadOnCloudinary } = require("../utils/cloudinary.js");
 const { ApiResponse } = require("../utils/ApiResponse.js");
 
-// access token and refresh token generation , generate karaye hai
-const genrateAccessAndRefreshToken = async (userId) => {
-  try {
-    const user = await User.findById(userId);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
-    //   user ke andar value add krna
-    user.refreshToken = refreshToken;
-    //  ek or parameter pass krege validate before save
-   await user.save({ validateBeforeSave: false });
 
-  return { accessToken, refreshToken }
+// access token and refresh token generation , generate karaye hai
+const generateAccessAndRefereshTokens = async(userId) =>{
+  try {
+      const user = await User.findById(userId)
+      const accessToken = user.generateAccessToken()
+      const refreshToken = user.generateRefreshToken()
+
+      user.refreshToken = refreshToken
+      await user.save({ validateBeforeSave: false })
+
+      return {accessToken, refreshToken}
 
 
   } catch (error) {
-    throw new ApiError(500, "Failed to generate access and refresh token");
+      throw new ApiError(500, "Something went wrong while generating referesh and access token")
   }
-};
+}
 
 const registerUser = asyncHandler(async (req, res) => {
   console.log("req.body: ", req.body);
@@ -110,93 +110,113 @@ const registerUser = asyncHandler(async (req, res) => {
 //password check
 //access and refreshh token
 //send cookies
-const loginUser = asyncHandler(async (req, res) => {
-  console.log("req.body: ", req.body);
-  const { email, username, password } = req.body;
+const loginUser = asyncHandler(async (req, res) =>{
+  // req body -> data
+  // username or email
+  //find the user
+  //password check
+  //access and referesh token
+  //send cookie
 
-  if (!(email || username)) {
-    throw new ApiError(400, "Email or username is required");
+  const {email, username, password} = req.body
+  console.log(email);
+
+  if (!username && !email) {
+      throw new ApiError(400, "username or email is required")
   }
+  
+  // Here is an alternative of above code based on logic discussed in video:
+  // if (!(username || email)) {
+  //     throw new ApiError(400, "username or email is required")
+      
+  // }
 
   const user = await User.findOne({
-    $or: [{ email }, { username }],
-  });
+      $or: [{username}, {email}]
+  })
 
   if (!user) {
-    throw new ApiError(404, "User not found");
+      throw new ApiError(404, "User does not exist")
+  }
+  // console.log("user: ", user);
+
+//  const isPasswordValid = await User.isPasswordCorrect(password)
+//  console.log("isPasswordValid: ", isPasswordValid);
+   
+//  if (!isPasswordValid) {
+//   throw new ApiError(401, "Invalid user credentials")
+//   }
+// tu andhadhun code chaape etle avu thay hai 
+// te pela password encrypt aj nai kryo to decrypt kya thi kre 
+// agar password encrypt kryo hot to database ma hashed password save thay
+// second thing te method barabr call nti krai but peli vastu to tare registration vakhat password encrypt nahi kryo
+// andhadhun code naa chaape potanu dimag lagavine code chaap pela jo ki tare actually ma ae vastu ni jrur chhe k nai
+// pchi code chaap ane ae b as a reference
+// mainly tu aa project drop kr tu aano reference le but taro potano bijo project le 
+// tu ena jevo code kris toh kadi nai sikhe potanu navu proj banay ae video no reference laine to jaldi sikhe
+// okay? okay, saruu 
+// aa youtube clone chhod ane ek kaam kr bijo koi proj le 
+// farm to home continue kr, ohkk done khali reference aa videos thi le pn potanu code kr potanu magaj lagavine hitu bhai bov hard words user kre , and a jebi koi a me kru chu ahiya and try kru samajvanu
+// avi rite nai krvanu samajhvanu video thi ane aiya ayine apply krvanu ae vastu to sikhase
+// coding is like maths sir sikhvadse khali method, pchi rd sharma toh jaate solve krvani, me maths bi pattern rite kru  if pattern matches toh a method apply kru
+// tu pela thi galat rite kre chhe badhu try to improve your learning skills nw dheeme dheeme thai jse but try to understand things badhu as it is naa chaape, okay bye
+// mummy bula rhi hai, okay bye bye, thik hai chl teri baton ko again dhyan me rakhege 
+
+ const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id)
+
+  const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+
+  const options = {
+      // httpOnly: true,
+      // secure: true aa vastu pchi on kri deje haal error ape etle
   }
 
-  //password check
-  const isPasswordValid = await user.isPasswordCorrect(password);
-  if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid password");
-  }
+  return res
+  .status(200)
+  .cookie("accessToken", accessToken, options)
+  .cookie("refreshToken", refreshToken, options)
+  .json(
+      new ApiResponse(
+          200, 
+          {
+              user: loggedInUser, accessToken, refreshToken
+          },
+          "User logged In Successfully"
+      )
+  )
 
-  // generate access token and refresh token
-//   lets accesstoken and refreshtoken lets call method 
-   const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
+})
 
-//  db vala User
-  const loggedInUser =  User.findById(user._id).select("-password -refreshToken")
-
- //cookies bhejne ke liye option use krna padta hai 
- //httponly true and secure true krne se only server se modified hogi , frontend se nahi modify ho sakti 
-
-    const options = {
-        httpOnly: true,
-        secure : true
-    }
-//if object na banake sirf loggedIN user ko bhej de aur login successfully bhej de toh bi chale 
-    return res.status(200)
-    .cookie("accessToken", accessToken, options)
-    .cookie("refreshToken", refreshToken, options)
-    .json(
-        new ApiResponse(
-            200,
-            {
-                user: loggedInUser,
-                accessToken,
-                refreshToken
-            },
-            "User logged in successfully"
-        )
-    )
-
-});
 
 //Logout User logic
 // fist of all remove all cookies, 
 //than reset the refresh token , so it would be logged out ,basically removing 
 
-const logoutUser = asyncHandler(async (req, res) => {
-    //login the accesstoken tha , uske basis pe query mari database se or req.user add kr diya
+const logoutUser = asyncHandler(async(req, res) => {
   await User.findByIdAndUpdate(
-      req.user._Id,
+      req.user._id,
       {
-         $set: {
-          refreshToken: undefined
-         }
-        },
-
-         {
+          $unset: {
+              refreshToken: 1 // this removes the field from document
+          }
+      },
+      {
           new: true
-         
-        } )
+      }
+  )
 
-       
-    const options = {
-      httpOnly: true,
-      secure : true
+  const options = {
+      // httpOnly: true,
+      // secure: true
   }
-  
+
   return res
   .status(200)
   .clearCookie("accessToken", options)
-  .clearCookie("refresgToken", options)
-  .json(new ApiResponse(200, {} , "user logged out"))
-  
-
-
-});
+  .clearCookie("refreshToken", options)
+  .json(new ApiResponse(200, {}, "User logged Out"))
+})
 
 module.exports = { registerUser, loginUser , logoutUser };
+//  sambhal mari error kau me register kryu and same pass thi login kru toh invalid batave , toh may be bcrypt hashing ma prob che
+// okay mne joi leva de, login ma error ave chhe ne?yes okay

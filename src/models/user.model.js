@@ -59,8 +59,14 @@ const userSchema = new Schema({
 userSchema.pre("save", async function(next) {
     if(!this.isModified("passwrord")) return next();
     // ab next ko call krdo
-    this.password = bcrypt.hash(this.password, 10);
-    next();
+    try {
+      const hashedPassword = await bcrypt.hash(this.password, 10);
+      this.password = hashedPassword;
+      next();
+    } catch (error) {
+      return next(error);
+    } 
+     
 })
 
 userSchema.methods.isPasswordCorrect = async function(password){
