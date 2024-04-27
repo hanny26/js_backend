@@ -146,21 +146,7 @@ const loginUser = asyncHandler(async (req, res) =>{
 //  if (!isPasswordValid) {
 //   throw new ApiError(401, "Invalid user credentials")
 //   }
-// tu andhadhun code chaape etle avu thay hai 
-// te pela password encrypt aj nai kryo to decrypt kya thi kre 
-// agar password encrypt kryo hot to database ma hashed password save thay
-// second thing te method barabr call nti krai but peli vastu to tare registration vakhat password encrypt nahi kryo
-// andhadhun code naa chaape potanu dimag lagavine code chaap pela jo ki tare actually ma ae vastu ni jrur chhe k nai
-// pchi code chaap ane ae b as a reference
-// mainly tu aa project drop kr tu aano reference le but taro potano bijo project le 
-// tu ena jevo code kris toh kadi nai sikhe potanu navu proj banay ae video no reference laine to jaldi sikhe
-// okay? okay, saruu 
-// aa youtube clone chhod ane ek kaam kr bijo koi proj le 
-// farm to home continue kr, ohkk done khali reference aa videos thi le pn potanu code kr potanu magaj lagavine hitu bhai bov hard words user kre , and a jebi koi a me kru chu ahiya and try kru samajvanu
-// avi rite nai krvanu samajhvanu video thi ane aiya ayine apply krvanu ae vastu to sikhase
-// coding is like maths sir sikhvadse khali method, pchi rd sharma toh jaate solve krvani, me maths bi pattern rite kru  if pattern matches toh a method apply kru
-// tu pela thi galat rite kre chhe badhu try to improve your learning skills nw dheeme dheeme thai jse but try to understand things badhu as it is naa chaape, okay bye
-// mummy bula rhi hai, okay bye bye, thik hai chl teri baton ko again dhyan me rakhege 
+
 
  const {accessToken, refreshToken} = await generateAccessAndRefereshTokens(user._id)
 
@@ -218,5 +204,3 @@ const logoutUser = asyncHandler(async(req, res) => {
 })
 
 module.exports = { registerUser, loginUser , logoutUser };
-//  sambhal mari error kau me register kryu and same pass thi login kru toh invalid batave , toh may be bcrypt hashing ma prob che
-// okay mne joi leva de, login ma error ave chhe ne?yes okay
